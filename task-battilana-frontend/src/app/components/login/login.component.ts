@@ -1,0 +1,49 @@
+import { Component, OnInit } from '@angular/core';
+import { LoginService } from '../../services/login.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from "@angular/forms";
+import { LoginRequest } from '../../models/login/login-request';
+import { Route, Router, RouterModule } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+//import {} from ''
+
+@Component({
+  selector: 'app-login',
+  imports: [CommonModule, FormsModule, RouterModule],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
+})
+export class LoginComponent implements OnInit{
+
+  loginRequest:LoginRequest = new LoginRequest();
+  isLoading: Boolean = false
+  year: number = new Date().getFullYear();
+
+  constructor(private loginService:LoginService, private route:Router, private toastr:ToastrService){}
+
+  ngOnInit(): void {
+    
+  }
+
+  onLogin(){
+    this.isLoading = true;
+    setTimeout(() => {
+      this.loginService.postLogin(this.loginRequest).subscribe(
+      response => {
+        if(response.statusResponse == 'success'){
+          this.loginService.setToken('userToken', response);
+          this.route.navigate(['/']);
+          this.toastr.success('', 'Bienvenido');
+          this.isLoading = false;
+        } else if(response.statusResponse == 'invalid_credentials'){
+          this.toastr.error('Credenciales incorrectas', 'Acceso denegado');
+          this.loginRequest.password = '';
+          this.isLoading = false;
+        }
+      }
+    )
+    }, 2000)
+  }
+
+
+}

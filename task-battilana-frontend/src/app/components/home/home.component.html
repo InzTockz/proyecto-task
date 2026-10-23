@@ -1,0 +1,242 @@
+<div class="px-4 sm:px-6 lg:px-10 py-6 lg:py-8 max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex flex-col gap-1 mb-6 animate-fade-down">
+        <h1 class="text-2xl sm:text-3xl font-bold text-surface-900">Panel de Proyectos</h1>
+        <p class="text-sm text-surface-500">Gestiona carpetas y tareas desde un solo lugar.</p>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger mb-6">
+        <div class="ui-card ui-card-hover p-5 animate-fade-up">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-sm font-medium text-surface-500">Tareas pendientes</p>
+                    <p class="mt-2 text-3xl font-bold text-surface-900">{{contadorPendiente}}</p>
+                </div>
+                <span class="w-11 h-11 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+                    <span-lucide [img]="icons.clock"></span-lucide>
+                </span>
+            </div>
+            <div class="h-1 mt-4 rounded-full bg-rose-100 overflow-hidden">
+                <div class="h-full bg-rose-400 animate-fade-in" style="width: 60%"></div>
+            </div>
+        </div>
+
+        <div class="ui-card ui-card-hover p-5 animate-fade-up">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-sm font-medium text-surface-500">Tareas completadas</p>
+                    <p class="mt-2 text-3xl font-bold text-surface-900">{{contadorTerminado}}</p>
+                </div>
+                <span class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                    <span-lucide [img]="icons.circleCheck"></span-lucide>
+                </span>
+            </div>
+            <div class="h-1 mt-4 rounded-full bg-emerald-100 overflow-hidden">
+                <div class="h-full bg-emerald-500 animate-fade-in" style="width: 80%"></div>
+            </div>
+        </div>
+
+        <div class="ui-card ui-card-hover p-5 animate-fade-up sm:col-span-2 lg:col-span-1">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-sm font-medium text-surface-500">Total de tareas</p>
+                    <p class="mt-2 text-3xl font-bold text-surface-900">{{contadorTotales}}</p>
+                </div>
+                <span class="w-11 h-11 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+                    <span-lucide [img]="icons.stadistic"></span-lucide>
+                </span>
+            </div>
+            <div class="h-1 mt-4 rounded-full bg-sky-100 overflow-hidden">
+                <div class="h-full bg-sky-500 animate-fade-in" style="width: 100%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toolbar: proyectos + filtros + acciones -->
+    <div class="ui-card p-4 sm:p-5 mb-4 animate-fade-up">
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div class="flex items-center gap-3">
+                <h2 class="text-lg sm:text-xl font-semibold text-surface-900">Proyectos</h2>
+                <a onclick="modal_task_without_file.showModal()"
+                   *ngIf="tareaSinCarpeta.length!=0"
+                   class="relative inline-flex items-center justify-center w-9 h-9 rounded-full bg-amber-50 text-amber-600 hover:bg-amber-100 cursor-pointer transition-colors"
+                   title="Tareas sin carpeta">
+                    <span-lucide [img]="icons.bell" class="animate-bell"></span-lucide>
+                    <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">
+                        {{tareaSinCarpeta.length}}
+                    </span>
+                </a>
+            </div>
+            <div class="flex flex-col sm:flex-row flex-wrap gap-2">
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <input type="date" [(ngModel)]="fechaInicio" (change)="filtradoPorFechas()"
+                        class="ui-input sm:w-auto">
+                    <input type="date" [(ngModel)]="fechaFin" (change)="filtradoPorFechas()"
+                        class="ui-input sm:w-auto">
+                </div>
+                <div class="flex gap-2">
+                    <a onclick="modal_add_file.showModal()" class="ui-btn-secondary flex-1 sm:flex-none cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10.5v6m3-3H9m4.06-7.19l-2.12-2.12A1.5 1.5 0 009.879 3.5H5.25A2.25 2.25 0 003 5.75v12.5A2.25 2.25 0 005.25 20.5h13.5A2.25 2.25 0 0021 18.25V9A2.25 2.25 0 0018.75 6.75h-5.69a1.5 1.5 0 01-1.06-.44z"/></svg>
+                        Nueva carpeta
+                    </a>
+                    <a onclick="modal_add_task.showModal()" class="ui-btn-primary flex-1 sm:flex-none cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                        Nueva tarea
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 mb-3 text-sm text-surface-500 animate-fade-in">
+        <span class="font-mono">proyectos</span>
+        <span>/</span>
+    </div>
+
+    <!-- Carpetas grid -->
+    <div *ngIf="carpetaResponse?.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger">
+        <div *ngFor="let c of carpetaResponse"
+             class="ui-card ui-card-hover p-4 cursor-pointer animate-fade-up group"
+             routerLink="/task" (click)="setIdCarpeta(c.idCarpeta)">
+            <div class="flex items-start gap-3">
+                <span class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:bg-amber-100 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z"/></svg>
+                </span>
+                <div class="min-w-0 flex-1">
+                    <h3 class="font-semibold text-surface-900 truncate group-hover:text-brand-700 transition-colors">{{c.nombreCarpeta}}</h3>
+                    <p class="text-xs text-surface-500 mt-0.5">Modificado: {{c.fechaModificacion | date: 'dd/MM/yyyy'}}</p>
+                </div>
+            </div>
+            <div class="mt-4 flex items-center justify-between">
+                <span class="ui-badge-warning" *ngIf="contadorTareaPorCarpetaPendiente.get(c.idCarpeta)">
+                    {{contadorTareaPorCarpetaPendiente.get(c.idCarpeta)}} pendientes
+                </span>
+                <span class="ui-badge-success" *ngIf="!contadorTareaPorCarpetaPendiente.get(c.idCarpeta)">
+                    Al día
+                </span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-surface-400 group-hover:text-brand-600 group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!carpetaResponse?.length" class="ui-card p-10 text-center animate-fade-in">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-surface-100 text-surface-400 flex items-center justify-center mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776"/></svg>
+        </div>
+        <p class="text-surface-700 font-medium">No hay carpetas todavía</p>
+        <p class="text-sm text-surface-500 mt-1">Crea tu primera carpeta para organizar las tareas.</p>
+    </div>
+</div>
+
+<!-- MODALES -->
+<dialog #modalCarpeta id="modal_add_file" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box !rounded-2xl !bg-white !border !border-surface-200 !shadow-card">
+        <h3 class="font-semibold text-lg text-surface-900">Crear carpeta</h3>
+        <p class="text-sm text-surface-500 mt-1">Ingresa el nombre para tu nueva carpeta.</p>
+        <div class="mt-5">
+            <label class="ui-label">Nombre de la carpeta</label>
+            <input [(ngModel)]="carpetaRequest.nombreCarpeta" class="ui-input"
+                placeholder="Ej: Proyecto Q1">
+        </div>
+        <div class="modal-action">
+            <button (click)="closeModalCarpeta()" class="ui-btn-ghost">Cancelar</button>
+            <button type="submit" (click)="addCarpeta()" class="ui-btn-primary">Agregar</button>
+        </div>
+    </div>
+</dialog>
+
+<dialog #modalTarea id="modal_add_task" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box max-h-screen overflow-y-auto !rounded-2xl !bg-white !border !border-surface-200 !shadow-card">
+        <div>
+            <h3 class="text-xl font-semibold text-surface-900">Registro de Tarea</h3>
+            <p class="text-sm text-surface-500 mt-1">Complete el formulario para registrar una nueva tarea.</p>
+        </div>
+        <div class="grid gap-4 py-5">
+            <div>
+                <label class="ui-label">Nombre de la Tarea</label>
+                <input placeholder="Escriba la tarea..." [(ngModel)]="tarea.nombreTarea" class="ui-input">
+            </div>
+            <div>
+                <label class="ui-label">Descripción</label>
+                <textarea placeholder="Escriba una descripción..." [(ngModel)]="tarea.descripcion"
+                    class="ui-input min-h-[90px]"></textarea>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="ui-label">Fecha de Inicio</label>
+                    <input type="date" [(ngModel)]="tarea.fechaInicio" class="ui-input">
+                </div>
+                <div>
+                    <label class="ui-label">Fecha de Fin</label>
+                    <input type="date" [(ngModel)]="tarea.fechaFin" class="ui-input">
+                </div>
+            </div>
+            <div>
+                <label class="ui-label">Carpeta</label>
+                <select class="ui-input" [(ngModel)]="tarea.idCarpeta">
+                    <option value="-1">Seleccione</option>
+                    <option *ngFor="let c of carpetaResponse" [value]="c.idCarpeta">{{c.nombreCarpeta}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-action">
+            <form method="dialog"><button class="ui-btn-ghost" (click)="closeModalTarea()">Cancelar</button></form>
+            <button class="ui-btn-primary" (click)="addTarea()">Registrar</button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button (click)="closeModalTarea()"></button>
+    </form>
+</dialog>
+
+<dialog #modalTareasSinCarpeta id="modal_task_without_file" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box w-11/12 max-w-5xl !rounded-2xl !bg-white !border !border-surface-200 !shadow-card">
+        <div class="flex flex-row justify-between items-start">
+            <div>
+                <h3 class="font-semibold text-lg text-surface-900">Tareas sin carpeta asignada</h3>
+                <p class="text-sm text-surface-500 mt-1">Asigna una carpeta a estas tareas para mantener el orden.</p>
+            </div>
+            <form method="dialog">
+                <button class="w-9 h-9 rounded-full hover:bg-surface-100 flex items-center justify-center text-surface-500">
+                    <span-lucide [img]="icons.close"></span-lucide>
+                </button>
+            </form>
+        </div>
+
+        <div class="mt-4 overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-left text-xs uppercase tracking-wider text-surface-500 border-b border-surface-200">
+                        <th class="py-3 px-3">Nombre</th>
+                        <th class="py-3 px-3">Creación</th>
+                        <th class="py-3 px-3">Carpeta</th>
+                        <th class="py-3 px-3 text-right">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let t of tareaSinCarpeta" class="border-b border-surface-100 hover:bg-surface-50 transition-colors">
+                        <td class="py-3 px-3 font-medium text-surface-800">{{t.nombreTarea}}</td>
+                        <td class="py-3 px-3 text-surface-500">{{t.fechaCreacion | date: 'dd/MM/yyyy'}}</td>
+                        <td class="py-3 px-3">
+                            <select [ngModel]="selected[t.idTarea] ?? -1"
+                                (ngModelChange)="selected[t.idTarea] = $event"
+                                [ngModelOptions]="{standalone:true}"
+                                class="ui-input py-1.5">
+                                <option [value]="-1">Seleccione</option>
+                                <option *ngFor="let c of carpetaResponse" [value]="c.idCarpeta">{{c.nombreCarpeta}}</option>
+                            </select>
+                        </td>
+                        <td class="py-3 px-3 text-right">
+                            <button class="ui-btn-primary" (click)="agregarCarpetaDeTareas(t.idTarea)"
+                                    [disabled]="(selected[t.idTarea] ?? -1) < 0">Agregar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</dialog>
