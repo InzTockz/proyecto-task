@@ -11,8 +11,7 @@ import { Estados } from '../models/tareas/estados';
 })
 export class TareasService {
 
-  //private tareasApi: string = "http://192.168.1.139:8080/v1/api/tareas";
-  private tareasApi:string = "http://192.168.1.10:8080/v1/api/tareas";
+  private tareasApi: string = "http://192.168.1.10:8080/v1/api/tareas";
   // private tareasApi: string = 'http://localhost:8080/v1/api/tareas'
 
   constructor(private http: HttpClient, private header: HeaderService) { }
@@ -54,13 +53,13 @@ export class TareasService {
   }
 
   //SERVICIO PARA ACTUALIZAR EL ESTADO CON UN COMENTARIO
-  updateStatusAndComment(idTarea: number, comentario?:string):Observable<void>{
+  updateStatusAndComment(idTarea: number, comentario?: string): Observable<void> {
     let params = new HttpParams().set("idTarea", idTarea);
-    if(comentario!=null && comentario!=""){
+    if (comentario != null && comentario != "") {
       params = params.set("comentario", comentario!)
-      return this.http.put<void>(`${this.tareasApi}/actualizar-comentario`, null, {params, headers: this.header.getHeader()})  
+      return this.http.put<void>(`${this.tareasApi}/actualizar-comentario`, null, { params, headers: this.header.getHeader() })
     } else {
-      return this.http.put<void>(`${this.tareasApi}/actualizar-comentario`, null, {params, headers: this.header.getHeader()})
+      return this.http.put<void>(`${this.tareasApi}/actualizar-comentario`, null, { params, headers: this.header.getHeader() })
     }
   }
 
@@ -106,21 +105,21 @@ export class TareasService {
     }
   }
 
-  getContadorPorCarpetaYEstado(idCarpeta:number, estado?:Estados):Observable<number>{
+  getContadorPorCarpetaYEstado(idCarpeta: number, estado?: Estados): Observable<number> {
     let params = new HttpParams().set('idCarpeta', idCarpeta);
-    if(estado != null){
+    if (estado != null) {
       params = params.set('estado', estado);
-      return this.http.get<number>(`${this.tareasApi}/contador/carpeta`, {params, headers:this.header.getHeader()});
+      return this.http.get<number>(`${this.tareasApi}/contador/carpeta`, { params, headers: this.header.getHeader() });
     } else {
-      return this.http.get<number>(`${this.tareasApi}/contador/carpeta`, {params, headers:this.header.getHeader()});
+      return this.http.get<number>(`${this.tareasApi}/contador/carpeta`, { params, headers: this.header.getHeader() });
     }
   }
 
   //SECCION DE LISTADO DE TAREAS POR USUARIO Y SIN CARPETAS
-  getTareasPorUsuarioSinCarpeta(idUsuario:number):Observable<TareaResponse[]>{
+  getTareasPorUsuarioSinCarpeta(idUsuario: number): Observable<TareaResponse[]> {
     return this.http.get<TareaResponse[]>(`${this.tareasApi}/listado/usuario/${idUsuario}/sin-carpeta`, { headers: this.header.getHeader() });
   }
-  postTareaPorCarpeta(idTarea:number, idCarpeta:number):Observable<TareaResponse>{
+  postTareaPorCarpeta(idTarea: number, idCarpeta: number): Observable<TareaResponse> {
     return this.http.put<TareaResponse>(`${this.tareasApi}/actualizar/tarea/${idTarea}/carpeta/${idCarpeta}`, null, { headers: this.header.getHeader() });
   }
 }

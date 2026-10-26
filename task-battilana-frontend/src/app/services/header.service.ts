@@ -7,9 +7,9 @@ import { HttpHeaders } from '@angular/common/http';
 })
 export class HeaderService {
 
-  constructor(private login:LoginService) { }
+  constructor(private login: LoginService) { }
 
-  getHeader(){
+  getHeader() {
     const token = this.login.getToken('userToken').token;
 
     return new HttpHeaders({

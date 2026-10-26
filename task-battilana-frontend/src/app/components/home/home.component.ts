@@ -12,6 +12,9 @@ import { CarpetaResponse } from '../../models/carpetas/carpeta-response';
 import { ToastrService } from 'ngx-toastr';
 import { Estados } from '../../models/tareas/estados';
 import { TareaResponse } from '../../models/tareas/tarea-response';
+import { defer, finalize } from 'rxjs';
+import { EmailService } from '../../services/email.service';
+import { TimeInterval } from 'rxjs/internal/operators/timeInterval';
 
 
 @Component({
@@ -34,9 +37,11 @@ export class HomeComponent implements OnInit {
   tareaSinCarpeta: TareaResponse[] = [];
   fechaInicio?: Date;
   fechaFin?: Date;
+  reenviandoCorreo = false;
+  errorReenvio = '';
   // idCarpeta: number = -1;
 
-  selected: { [idTarea:number]: number} = {};
+  selected: { [idTarea: number]: number } = {};
 
   @ViewChild('modalTarea') modalRegistro!: ElementRef<HTMLDialogElement>;
   @ViewChild('modalCarpeta') modalCarpetaDialog!: ElementRef<HTMLDialogElement>;
@@ -47,7 +52,7 @@ export class HomeComponent implements OnInit {
   contadorTareaPorCarpetaPendiente = new Map<number, number>();
 
   constructor(private tareasService: TareasService, private loginService: LoginService, private carpetaService: CarpetaService,
-    private toastService: ToastrService
+    private toastService: ToastrService, private emailService: EmailService
   ) { }
 
   ngOnInit(): void {
@@ -61,6 +66,24 @@ export class HomeComponent implements OnInit {
 
   }
 
+  reenviarCorreo(): void {
+    this.reenviandoCorreo = true;
+    this.errorReenvio = '';
+
+    const idUsuario = this.loginService.getToken("userToken").idUsuarios;
+
+    this.emailService.reenviarEmail(idUsuario).subscribe(
+      () => {
+        setTimeout(
+          () => {
+            this.reenviandoCorreo = false;
+          }, 1000
+        )
+      }
+    );
+
+  }
+
   listadoTareasSinCarpeta() {
     const idUsuario = this.loginService.getToken('userToken').idUsuarios;
     this.tareasService.getTareasPorUsuarioSinCarpeta(idUsuario).subscribe(
@@ -70,9 +93,9 @@ export class HomeComponent implements OnInit {
     )
   }
 
-  agregarCarpetaDeTareas(idTarea: number, idCarpeta?:number) {
+  agregarCarpetaDeTareas(idTarea: number, idCarpeta?: number) {
     const elegido = idCarpeta ?? this.selected[idTarea];
-    if(elegido == null || elegido < 0 ) return;
+    if (elegido == null || elegido < 0) return;
     this.tareasService.postTareaPorCarpeta(idTarea, elegido).subscribe(
       () => {
         this.listadoTareasSinCarpeta();

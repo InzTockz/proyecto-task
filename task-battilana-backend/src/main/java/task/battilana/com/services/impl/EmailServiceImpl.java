@@ -17,7 +17,6 @@ import task.battilana.com.repository.UsuarioRepository;
 import task.battilana.com.services.EmailService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class EmailServiceImpl implements EmailService {
     private final TareasRepository tareasRepository;
 
     @Override
-    public void reenviarEstadoEmail(Long idUsuario) throws MessagingException {
+    public void reenviarEstadoEmail(Long idUsuario)  {
 
             UsuariosEntity usuarioEncontrado = this.usuarioRepository.findById(idUsuario).orElseThrow(
                     () -> new EntityNotFoundException("Usuario con id: " + idUsuario + " no existe.")
@@ -37,22 +36,28 @@ public class EmailServiceImpl implements EmailService {
 
             List<TareasEntity> tareasPorUsuario = this.tareasRepository.listadoTareasPorUsuario(usuarioEncontrado.getIdUsuarios());
 
-            MimeMessage ms = this.jms.createMimeMessage();
-            MimeMessageHelper msh = new MimeMessageHelper(ms, true, "UTF-8");
+            try {
 
-            msh.setFrom("taskbattilana@battilana.biz");
-            msh.setTo(usuarioEncontrado.getCorreo());
-            msh.setSubject("Recordatorio: Tareas pendientes por completar");
+                MimeMessage ms = this.jms.createMimeMessage();
+                MimeMessageHelper msh = new MimeMessageHelper(ms, true, "UTF-8");
 
-            Context context = new Context();
-            context.setVariable("nombre", usuarioEncontrado.getNombres());
-            context.setVariable("listaTareas", tareasPorUsuario);
-            String html = this.templateEngine.process("mail-automatic", context);
+                msh.setFrom("taskbattilana@battilana.biz");
+                msh.setTo(usuarioEncontrado.getCorreo());
+                msh.setSubject("Recordatorio: Tareas pendientes por completar");
 
-            msh.setText(html, true);
+                Context context = new Context();
+                context.setVariable("nombre", usuarioEncontrado.getNombres());
+                context.setVariable("listaTareas", tareasPorUsuario);
+                String html = this.templateEngine.process("mail-automatic", context);
 
-            msh.addInline("pendingIcon", new ClassPathResource("templates/static/image/pending.png"), "image/png");
+                msh.setText(html, true);
 
-            this.jms.send(ms);
+                msh.addInline("pendingIcon", new ClassPathResource("templates/static/image/pending.png"), "image/png");
+
+                this.jms.send(ms);
+            } catch (MessagingException me){
+                System.out.println(me.getMessage());
+            }
+
     }
 }

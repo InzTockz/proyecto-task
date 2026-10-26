@@ -45,6 +45,7 @@ public class SecurityConfig {
                                 .requestMatchers("/v1/api/tareas/registrar").hasAnyRole("ADMINISTRADOR", "USUARIO")
                                 .requestMatchers("/v1/api/tareas/eliminar/**").hasAnyRole("ADMINISTRADOR", "USUARIO")
                                 .requestMatchers("/v1/api/tareas/actualizar-estado/**").hasAnyRole("ADMINISTRADOR", "USUARIO")
+                                .requestMatchers("/api/v1/email/*").hasAnyRole("ADMINISTRADOR", "USUARIO")
                                 //LISTADO
                                 .requestMatchers("/v1/api/tareas/listado-pendiente/usuario/**").hasAnyRole("ADMINISTRADOR", "USUARIO")
                                 .requestMatchers("/v1/api/tareas/listado-terminado/usuario/**").hasAnyRole("ADMINISTRADOR", "USUARIO")
