@@ -1,0 +1,7 @@
+# Archivos que NO se envían a Docker al hacer "docker build".
+node_modules
+dist
+.angular
+.vscode
+.git
+*.md

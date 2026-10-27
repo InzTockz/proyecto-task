@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -21,6 +22,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
+
+    @Value("${credenciales.value.email-emisor}")
+    String emailEmisor;
 
     private final UsuarioRepository usuarioRepository;
     private final JavaMailSender jms;
@@ -41,7 +45,7 @@ public class EmailServiceImpl implements EmailService {
                 MimeMessage ms = this.jms.createMimeMessage();
                 MimeMessageHelper msh = new MimeMessageHelper(ms, true, "UTF-8");
 
-                msh.setFrom("taskbattilana@battilana.biz");
+                msh.setFrom(emailEmisor);
                 msh.setTo(usuarioEncontrado.getCorreo());
                 msh.setSubject("Recordatorio: Tareas pendientes por completar");
 
