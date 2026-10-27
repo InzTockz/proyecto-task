@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -21,6 +22,9 @@ import java.util.List;
 
 @Component
 public class ScheduledMail {
+
+    @Value("${credenciales.value.email-emisor}")
+    private String emailEmisor;
 
     private final JavaMailSender javaMailSender;
     private final Logger logger = LoggerFactory.getLogger(ScheduledMail.class);
@@ -49,7 +53,7 @@ public class ScheduledMail {
                         MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
                         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-                        helper.setFrom("taskbattilana@battilana.biz");
+                        helper.setFrom(emailEmisor);
                         helper.setTo(usuarios.getCorreo());
                         helper.setSubject("Recordatorio: Tareas pendientes por completar");
 

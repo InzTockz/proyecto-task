@@ -4,14 +4,14 @@ import { UsuariosResponse } from '../models/usuarios/usuarios-response';
 import { Observable, ObservableLike } from 'rxjs';
 import { UsuariosRequest } from '../models/usuarios/usuarios-request';
 import { HeaderService } from './header.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuariosService {
 
-  private usuarioApi: string = "http://192.168.1.10:8080/v1/api/usuario";
-  // private usuarioApi: string = "http://localhost:8080/v1/api/usuario"
+  private usuarioApi: string = `${environment.apiUrl}/v1/api/usuario`;
 
   constructor(private http: HttpClient, private header: HeaderService) { }
 

@@ -1,6 +1,7 @@
 package task.battilana.com.jwt;
 
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,9 @@ import static task.battilana.com.jwt.Constans.*;
 @Service
 public class JwtGenerator {
 
+    @Value("${jwt.secretkey}")
+    private String superSecretKey;
+
     public String getToken(String username){
         List<GrantedAuthority> authorityList = AuthorityUtils.commaSeparatedStringToAuthorityList(
                 SecurityContextHolder.getContext().getAuthentication().getAuthorities()
@@ -28,7 +32,7 @@ public class JwtGenerator {
                         .map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRATION_TIME))
-                .signWith(getSignedKey(SUPER_SECRET_KEY))
+                .signWith(getSignedKey(superSecretKey))
                 .compact();
         return "Bearer " + token;
     }

@@ -1,0 +1,31 @@
+services:
+    #backend
+    backend:
+        build:
+            context: ./task-battilana-backend
+            dockerfile: DockerFile
+        container_name: task-backend
+        restart: unless-stopped
+        env_file: .env
+        ports:
+            - "8080:8080"
+        networks:
+            - network-battilana
+    #frontend
+    frontend:
+        build:
+            context: ./task-battilana-frontend
+            dockerfile: Dockerfile
+        image: task-battilana-frontend
+        container_name: task-frontend
+        restart: unless-stopped
+        depends_on:
+            - backend
+        ports:
+            "4200:80"
+        networks:
+            - network-battilana
+networks:
+    network-battilana:
+        external: true
+        

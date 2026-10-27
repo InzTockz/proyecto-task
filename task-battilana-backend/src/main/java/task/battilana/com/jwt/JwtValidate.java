@@ -22,11 +22,11 @@ public class JwtValidate {
         }
     }
 
-    public static Claims jwtValid(HttpServletRequest request){
+    public static Claims jwtValid(HttpServletRequest request, String superSecretKey){
         String jwttoken = request.getHeader(HEADER_AUTHORIZATION).replace(TOKEN_BEARER_PREFIX, "");
 
         Claims claims = Jwts.parser()
-                .verifyWith(getSignedKey(SUPER_SECRET_KEY))
+                .verifyWith(getSignedKey(superSecretKey))
                 .build()
                 .parseSignedClaims(jwttoken)
                 .getPayload();

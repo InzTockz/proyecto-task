@@ -4,14 +4,14 @@ import { Observable } from 'rxjs';
 import { CarpetaRequest } from '../models/carpetas/carpeta-request';
 import { CarpetaResponse } from '../models/carpetas/carpeta-response';
 import { HeaderService } from './header.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CarpetaService {
 
-  private carpetaApi: string = 'http://192.168.1.10:8080/v1/api/carpetas';
-  // private carpetaApi: string = "http://localhost:8080/v1/api/carpetas";
+  private carpetaApi: string = `${environment.apiUrl}/v1/api/carpetas`;
 
   constructor(private http: HttpClient, private header: HeaderService) { }
 

@@ -2,14 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { HeaderService } from './header.service';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmailService {
 
-  // private emailApi: string = "http://localhost:8080/api/v1/email";
-  private emailApi: string = 'http://192.168.1.10:8080/api/v1/email';
+  private emailApi: string = `${environment.apiUrl}/api/v1/email`;
 
   constructor(private http: HttpClient, private header: HeaderService) { };
 
